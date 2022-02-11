@@ -1,3 +1,8 @@
 # Default ignored files
 /shelf/
+.cache
+README.md
+SpotifyProject.iml
+misc.xml
+modules.xml
 workspace.xml

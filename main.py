@@ -1,16 +1,3 @@
-#Genre Reccommender - Prototype version
-#Created by Megan Hammers on 9/28/21. Last Updated on 10/9/21
-
-#Process for GenreReccommender
-#1. User inputs artist
-#2. User inputs genre
-#3. App finds general feature's of that artist's music
-#4. App provides recommendations of
-
-#TODO
-#convert into webapp
-#create login for users to use their playlists as input
-
 #authorization
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
@@ -23,13 +10,13 @@ fob_uri = 'spotify:artist:4UXqAaa6dQYAk18Lv7PEgX'
 lz_uri = 'spotify:artist:36QJpDe2go2KgaRleHCDTp'
 beethoven_uri = 'spotify:artist:2wOqMjp9TyABvtHdOSOTUS'
 
-#User music input
+#User music input - what if they don't pick an artist?
 artist_query = input("What's an artist that you like?")
 search_res = spotify.search(q=artist_query,type='artist')['artists']['items']
 artist_uri = search_res[0]['uri']
 
 #Genre input
-seed_genres = ['acoustic', 'afrobeat', 'alt-rock', 'alternative', 'ambient', 'anime', 'black-metal', 'bluegrass',
+seed_genres = {'acoustic', 'afrobeat', 'alt-rock', 'alternative', 'ambient', 'anime', 'black-metal', 'bluegrass',
                'blues', 'bossanova', 'brazil', 'breakbeat', 'british', 'cantopop', 'chicago-house', 'children', 'chill',
                'classical', 'club', 'comedy', 'country', 'dance', 'dancehall', 'death-metal', 'deep-house',
                'detroit-techno', 'disco', 'disney', 'drum-and-bass', 'dub', 'dubstep', 'edm', 'electro', 'electronic',
@@ -43,7 +30,7 @@ seed_genres = ['acoustic', 'afrobeat', 'alt-rock', 'alternative', 'ambient', 'an
                'road-trip', 'rock', 'rock-n-roll', 'rockabilly', 'romance', 'sad', 'salsa', 'samba', 'sertanejo',
                'show-tunes', 'singer-songwriter', 'ska', 'sleep', 'songwriter', 'soul', 'soundtracks', 'spanish',
                'study', 'summer', 'swedish', 'synth-pop', 'tango', 'techno', 'trance', 'trip-hop', 'turkish',
-               'work-out', 'world-music']
+               'work-out', 'world-music'}
 
 genre_pick = '?'
 
@@ -64,10 +51,6 @@ mode_list = []
 
 for track in top_ten['tracks'][:10]:
     features = spotify.audio_features(track['id'])[0] #why does this give me a list with one item and a dict inside?
-    #print('track     : ' + track['name'])
-    #print('audio    : ' + str(track['external_urls']))
-    #print('cover art: ' + track['album']['images'][0]['url'])
-    #print('popularity: ' + str(track['popularity']))
     danciness_list.append(features['danceability'])
     energy_list.append(features['energy'])
     valence_list.append(features['valence'])
@@ -75,7 +58,7 @@ for track in top_ten['tracks'][:10]:
     mode_list.append(features['mode'])
     #print()
 
-dev_scale = 1.25 #multiplier for stdev. 1.0 only returns 1 result for some artists/genres. Needs fine tuning
+dev_scale = 1.25 #multiplier for stdev. 1.0 only returns 1 result for some artists/genres. Needs fine tuning. Expand to user input
 danciness_avg, danciness_stdev = statistics.mean(danciness_list), dev_scale * statistics.stdev(danciness_list)
 energy_avg,    energy_stdev    = statistics.mean(energy_list),    dev_scale * statistics.stdev(energy_list)
 valence_avg,   valence_stdev   = statistics.mean(valence_list),   dev_scale * statistics.stdev(valence_list)
@@ -93,12 +76,4 @@ for track in reccs:
     features = spotify.audio_features(track['id'])[0] #why does this give me a list with one item and a dict inside?
     print(track['name'] + ' - ' + str(track['artists'][0]['name']))
     print('audio     : ' + str(track['external_urls']['spotify']))
-    #print('artist    : ' + str(track['artists'][0]['name']))
-    #print('danceiness: ' + str(features['danceability']))
-    #print('energy    : ' + str(features['energy']))
-    #print('valence   : ' + str(features['valence']))
-    #print("tempo     : " + str(features['tempo']) + " BPM")
-    #print("mode      : " + str(features['mode']))
     print()
-
-
